@@ -1,0 +1,211 @@
+@font-face {
+    font-family: "萝莉体";
+    src: url("萝莉体.eot"); /* IE9 */
+    src: url("萝莉体.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    
+    url("萝莉体.woff") format("woff"), /* chrome、firefox */
+    url("萝莉体.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+    
+    url("萝莉体.svg#萝莉体") format("svg"); /* iOS 4.1- */
+    font-style: normal;
+    font-weight: normal;
+}
+
+body{
+    /* background-image: url(background-2.jpg); */
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+img {
+    -webkit-filter: opacity(30%); /* Chrome, Safari, Opera */
+    filter: opacity(90%);
+}
+div#output {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
+.title{
+    font-size: 24px;
+    display: unset;
+    font-family: lolita;
+    text-align: center;
+}
+img{
+    width: 150px;
+    height: 198px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+.bord {
+    display: flex;
+    margin: 17px;
+    border: 3px solid rgba(0, 0, 0, 0);
+    border-radius: 2%;
+    width: 400px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 198px;
+}
+.title2{
+    font-size: 30px;
+    text-align: center;
+    font-family: lolita;
+}
+.circle-container {
+    width: fit-content;
+    height: fit-content;
+    background-color: #ff7a7a;
+    border-radius: 6%;
+    padding: 3px;
+}
+
+.circle-text {
+    margin: 2px;
+    color: white;
+    text-align: center;
+}
+.tag{
+    margin-bottom: -10px;
+    margin-top: 16px;
+}
+.warning{
+    border: 2px solid rgb(255, 69, 69);
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 3px;
+
+}
+.text {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+.footer{
+    font-size: 12px;
+    text-align: center;
+    margin-top: 200px;
+}
+.introduce{
+    display: -webkit-box;            /* 使用 flexbox 模式显示 */
+    -webkit-box-orient: vertical;    /* 垂直排列子元素 */
+    -webkit-line-clamp: 4;                   /* 限制显示的行数 */
+    overflow: hidden;                /* 隐藏超出容器的文本 */
+    text-overflow: ellipsis;         /* 添加省略号 */
+    margin: 3px;
+    font-size: 14px;
+}
+
+dd {
+    display: flex; /* 使用 flexbox 布局 */
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 5px; /* 按钮之间的间距减少 */
+    margin: 0; /* 去除默认外边距 */
+    padding: 0; /* 去除默认内边距 */
+
+}
+
+dd a {
+    margin-left: 2px;
+    display: inline-block; /* 使链接成为内联块元素 */
+    padding: 0 5px; /* 去除上下内边距，保持左右内边距 */
+    background-color: #2b2b2b; /* 按钮背景为深灰色，配合神秘氛围 */
+    color: #ff4d4d; /* 文字颜色为鲜血红 */
+    text-align: center; /* 文字居中 */
+    text-decoration: none; /* 去除下划线 */
+    border-radius: 3px; /* 按钮的圆角减小 */
+    font-size: 10px; /* 字体大小设为 10px */
+    line-height: 1; /* 使行高与字体大小相同 */
+    transition: background-color 0.3s ease; /* 背景颜色渐变效果 */
+    border: 1px solid #444; /* 按钮边框为暗色 */
+}
+
+dd a p {
+    margin: 0; /* 去除 p 标签的默认外边距 */
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 0; /* 去除 p 标签的内边距 */
+    line-height: 1; /* 使 p 标签的行高与字体大小一致 */
+}
+
+dd a:hover {
+    background-color: #3a3a3a; /* 悬停时按钮变为更暗的灰色 */
+    color: #ff3333; /* 悬停时文字颜色变得更加鲜红 */
+    border-color: #ff4d4d; /* 悬停时边框颜色变为鲜血红 */
+}
+
+
+
+
+@media screen and (max-width: 768px) {
+    /* .title2{
+        margin-bottom: 30%;
+    }
+    .bord {
+        width: 30%;
+        margin-bottom: 20px;
+        margin-left: 3px;
+        margin-right: 3px;
+        border-radius: 5%;
+    }
+    .title {
+        font-size: 14px;
+    } */
+    .bord{
+        background-color: #2b2b2b69;
+    }
+    body{
+        color: #FFF;
+        background: url(phone.jpg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
+    * {
+        box-sizing: border-box;
+        transition: width 0.5s ease-in-out  0s;
+   }
+}
+
+    
+
+
+
+/* @media screen and (max-width: 768px) {
+    .bord {
+        display: flex;
+        margin: 8px;
+        border: 2px solid #6c0000;
+        border-radius: 2%;
+        padding: 1%;
+        width: 100%;
+        height: fit-content;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+    
+    img{
+        width: 100%;
+    }
+    .imgs{
+        flex: 0 0 50%
+    }
+    .title{
+        flex: 0 0 55px
+    }
+    .tag{
+        writing-mode: vertical-rl;
+        margin-top: 0;
+        margin-left: 8px;
+        margin-right: 8px;
+        
+    }
+} */

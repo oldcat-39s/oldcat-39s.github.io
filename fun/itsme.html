@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>It's me</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ee;
+    --border: #222;
+    --cell-bg: #fff;
+    --text: #111;
+    --text-muted: #666;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Noto Sans SC', sans-serif;
+    padding: 32px 16px 60px;
+    overflow-x: hidden;
+  }
+
+  h1.title-box {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(20px, 5vw, 28px);
+    font-style: italic;
+    letter-spacing: 2px;
+    background: #111;
+    color: #fff;
+    padding: 9px 32px;
+    border-radius: 3px;
+    margin-bottom: 24px;
+    user-select: none;
+  }
+
+  /* Outer scaler: shrinks the fixed-position grid to fit screen */
+  .grid-scaler {
+    transform-origin: top center;
+  }
+
+  .grid-wrap {
+    position: relative;
+  }
+
+  .cell {
+    position: absolute;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cell-bg);
+    transition: border-color .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cell:active { border-color: #555; }
+
+  .cell .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 5px;
+    line-height: 1.45;
+    white-space: pre-line;
+    pointer-events: none;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+    transition: opacity .2s;
+  }
+
+  .cell.big .label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .cell input[type=file] { display: none; }
+
+  /* overlay always visible on touch devices */
+  .cell .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    opacity: 0;
+    transition: opacity .2s;
+    background: rgba(0,0,0,.45);
+    z-index: 2;
+  }
+
+  /* desktop hover */
+  @media (hover: hover) {
+    .cell:hover .overlay { opacity: 1; }
+    .cell:hover .remove-btn.visible { display: flex; }
+  }
+
+  /* touch: show overlay on cells that have no image */
+  @media (hover: none) {
+    .cell:not(.has-image) .overlay { opacity: 0.7; }
+    .cell .overlay span { display: none; } /* hide text, keep icon small */
+    .remove-btn.visible { display: flex !important; }
+  }
+
+  .cell .overlay svg {
+    width: 20px;
+    height: 20px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .cell .overlay span {
+    font-size: 10px;
+    color: #fff;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .cell .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.6);
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  footer {
+    margin-top: 28px;
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="title-box">It's me</h1>
+<div class="grid-scaler" id="scaler">
+  <div class="grid-wrap" id="grid"></div>
+</div>
+
+<script>
+const BASE_S = 90;
+const BASE_G = 8;
+const BASE_STEP = BASE_S + BASE_G;
+
+function pos(col, row, cs, rs, S, G) {
+  const step = S + G;
+  return {
+    left:   col  * step,
+    top:    row  * step,
+    width:  cs   * step - G,
+    height: rs   * step - G
+  };
+}
+
+const cellDefs = [
+  { id:'style',    label:'你喜欢的\n风格',       col:1, row:0, cs:1, rs:1 },
+  { id:'food',     label:'你喜欢的\n食物',       col:2, row:0, cs:1, rs:1 },
+  { id:'music',    label:'你喜欢的\n音乐',       col:4, row:0, cs:2, rs:2, big:true },
+  { id:'drink',    label:'你喜欢的\n饮品或奶茶', col:0, row:1, cs:1, rs:1 },
+  { id:'birthday', label:'你的\n生日',           col:1, row:1, cs:2, rs:2, big:true },
+  { id:'star',     label:'你的星座',              col:3, row:1, cs:1, rs:1 },
+  { id:'fruit',    label:'你最喜欢\n吃的水果',   col:6, row:1, cs:1, rs:1 },
+  { id:'mbti',     label:'你的\nMBTI',          col:0, row:2, cs:1, rs:1, big:true },
+  { id:'season',   label:'你喜欢的\n四季',       col:3, row:2, cs:1, rs:1 },
+  { id:'avatar',   label:'你的\n头像',           col:4, row:2, cs:2, rs:2, big:true },
+  { id:'role',     label:'你喜欢的\n角色或明星', col:6, row:2, cs:1, rs:1 },
+  { id:'weather',  label:'你喜欢的\n天气',       col:1, row:3, cs:1, rs:1 },
+  { id:'color',    label:'你喜欢的\n颜色',       col:2, row:3, cs:2, rs:2, big:true },
+  { id:'place',    label:'想去的地方',            col:4, row:4, cs:1, rs:1 },
+  { id:'animal',   label:'你最喜欢的\n动物',     col:3, row:5, cs:1, rs:1 },
+];
+
+const uploadIcon = `<svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>`;
+
+function build(S, G) {
+  const wrap = document.getElementById('grid');
+  wrap.innerHTML = '';
+
+  const cells = cellDefs.map(d => ({ ...d, ...pos(d.col, d.row, d.cs, d.rs, S, G) }));
+  const maxR = Math.max(...cells.map(c => c.left + c.width));
+  const maxB = Math.max(...cells.map(c => c.top  + c.height));
+  wrap.style.width  = maxR + 'px';
+  wrap.style.height = maxB + 'px';
+
+  // font scale
+  const fontScale = S / BASE_S;
+
+  cells.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'cell' + (c.big ? ' big' : '');
+    div.dataset.id = c.id;
+    div.style.cssText = `left:${c.left}px;top:${c.top}px;width:${c.width}px;height:${c.height}px`;
+
+    const lbl = document.createElement('div');
+    lbl.className = 'label';
+    lbl.textContent = c.label;
+    lbl.style.fontSize = (c.big ? Math.round(15 * fontScale) : Math.max(9, Math.round(11 * fontScale))) + 'px';
+
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = uploadIcon + '<span>上传</span>';
+
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*';
+
+    const rmBtn = document.createElement('button');
+    rmBtn.className = 'remove-btn';
+    rmBtn.textContent = '×';
+    rmBtn.title = '移除图片';
+    rmBtn.style.width = Math.max(18, Math.round(22 * fontScale)) + 'px';
+    rmBtn.style.height = rmBtn.style.width;
+
+    div.append(lbl, overlay, inp, rmBtn);
+
+    div.addEventListener('click', e => {
+      if (e.target === rmBtn) return;
+      inp.click();
+    });
+
+    rmBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const img = div.querySelector('img');
+      if (img) img.remove();
+      lbl.style.opacity = '1';
+      rmBtn.classList.remove('visible');
+      div.classList.remove('has-image');
+    });
+
+    inp.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        let img = div.querySelector('img');
+        if (!img) { img = document.createElement('img'); div.prepend(img); }
+        img.src = ev.target.result;
+        lbl.style.opacity = '0';
+
+        div.classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+      inp.value = '';
+    });
+
+    wrap.appendChild(div);
+  });
+}
+
+function layout() {
+  const availW = Math.min(window.innerWidth - 32, 700);
+  // grid natural width at BASE_S = 7 cols * step - gap = 7*98 - 8 = 678
+  const naturalW = 7 * (BASE_S + BASE_G) - BASE_G;
+  if (availW >= naturalW) {
+    build(BASE_S, BASE_G);
+    document.getElementById('scaler').style.transform = '';
+    document.getElementById('scaler').style.marginBottom = '';
+  } else {
+    // scale down proportionally
+    const ratio = availW / naturalW;
+    const S = Math.floor(BASE_S * ratio);
+    const G = Math.max(4, Math.floor(BASE_G * ratio));
+    build(S, G);
+    document.getElementById('scaler').style.transform = '';
+    document.getElementById('scaler').style.marginBottom = '';
+  }
+}
+
+layout();
+window.addEventListener('resize', layout);
+</script>
+</body>
+</html>
