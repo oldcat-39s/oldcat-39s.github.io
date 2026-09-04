@@ -18,10 +18,10 @@
         </tr>
         <tr>
             <td style="width: 200px;">
-                
                 <button onclick="window.location.href='/index.html'">Home</button>
                 <button onclick="window.location.href='/about.html'">About</button>
                 <button onclick="window.location.href='/thoughts.html'">Thoughts</button>
+
 
                 <h2>Status</h2>
                 <p style="font-size: 12px;" id="status-text"></p>
@@ -56,19 +56,15 @@
                     </a>
                 </p>
                 <br>
-            </td>
-            <td style="width: 700px; padding: 18px; padding-right: 60px;">
-                <h1>Status</h1>
-                <p style="font-size: 12px; white-space: pre-wrap;">
-                    2026/09/02 11:32 am
-                    天气变冷了...要是一直这样就好了。
-
-                    2026/09/02 01:13 am
-                    做出想要的样子了！耶
-                </p>
-            </td>
+                </td>
+                <td style="width: 700px; padding: 18px; padding-right: 60px;">
+                    <p>在这里随意写一些想法……</p>
+                    <h1>thoughts</h1>
+                    <p id="auto_push" style="font-size: 12px"></p>
+                </td>
         </tr>
     </table>
+    <script src="js/auto_push.js"></script>
     <script src="js/status.js"></script>
 </body>
 </html>
